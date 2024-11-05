@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banking System</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #e9eff1;
+            color: #333;
+        }
+        .container {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .sidebar {
+            width: 250px;
+            background: #3498db;
+            color: #fff;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            overflow-y: auto;
+        }
+        .sidebar h2 {
+            margin-top: 0;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .sidebar button {
+            display: block;
+            width: 100%;
+            background: #2980b9;
+            border: none;
+            color: #fff;
+            padding: 15px;
+            margin: 10px 0;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 18px;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .sidebar button:hover {
+            background: #1c5d99;
+            transform: scale(1.02);
+        }
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .main-content h1 {
+            margin-top: 0;
+            font-size: 28px;
+            color: #2c3e50;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .form-group button {
+            background: #27ae60;
+            border: none;
+            color: #fff;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .form-group button:hover {
+            background: #2ecc71;
+            transform: scale(1.02);
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .result h2 {
+            margin: 0;
+            font-size: 20px;
+            color: #3498db;
+        }
+        .result pre {
+            white-space: pre-wrap; /* To handle long text */
+            word-wrap: break-word; /* Ensure it breaks lines in long words */
+        }
+        .loading {
+            display: none;
+            font-size: 18px;
+            color: #3498db;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="sidebar">
+        <h2>Banking System</h2>
+        <button onclick="showSection('createAccount')">Create Account</button>
+        <button onclick="showSection('findAccount')">Find Account</button>
+        <button onclick="showSection('deposit')">Deposit</button>
+        <button onclick="showSection('withdraw')">Withdraw</button>
+        <button onclick="showSection('updateData')">Update Data</button>
+        <button onclick="showSection('passbook')">Passbook</button>
+    </div>
+    <div class="main-content">
+        <div id="loading" class="loading">Loading...</div>
+        <div id="createAccount" class="form-section">
+            <h1>Create Account</h1>
+            <div class="form-group">
+                <label for="createName">Name:</label>
+                <input type="text" id="createName" placeholder="Enter your name">
+            </div>
+            <div class="form-group">
+                <label for="createContactNo">Contact No:</label>
+                <input type="text" id="createContactNo" placeholder="Enter contact number">
+            </div>
+            <div class="form-group">
+                <label for="createAddress">Address:</label>
+                <input type="text" id="createAddress" placeholder="Enter address">
+            </div>
+            <div class="form-group">
+                <button onclick="createAccount()">Create Account</button>
+            </div>
+            <div id="createResult" class="result"></div>
+        </div>
+
+        <div id="findAccount" class="form-section" style="display: none;">
+            <h1>Find Account</h1>
+            <div class="form-group">
+                <label for="findAccountNo">Account No:</label>
+                <input type="text" id="findAccountNo" placeholder="Enter account number">
+            </div>
+            <div class="form-group">
+                <button onclick="findAccount()">Find Account</button>
+            </div>
+            <div id="findResult" class="result"></div>
+        </div>
+
+        <div id="deposit" class="form-section" style="display: none;">
+            <h1>Deposit</h1>
+            <div class="form-group">
+                <label for="depositAccountNo">Account No:</label>
+                <input type="text" id="depositAccountNo" placeholder="Enter account number">
+            </div>
+            <div class="form-group">
+                <label for="depositAmount">Amount:</label>
+                <input type="text" id="depositAmount" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <button onclick="deposit()">Deposit</button>
+            </div>
+            <div id="depositResult" class="result"></div>
+        </div>
+
+        <div id="withdraw" class="form-section" style="display: none;">
+            <h1>Withdraw</h1>
+            <div class="form-group">
+                <label for="withdrawAccountNo">Account No:</label>
+                <input type="text" id="withdrawAccountNo" placeholder="Enter account number">
+            </div>
+            <div class="form-group">
+                <label for="withdrawAmount">Amount:</label>
+                <input type="text" id="withdrawAmount" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <button onclick="withdraw()">Withdraw</button>
+            </div>
+            <div id="withdrawResult" class="result"></div>
+        </div>
+
+        <div id="updateData" class="form-section" style="display: none;">
+            <h1>Update Data</h1>
+            <div class="form-group">
+                <label for="updateAccountNo">Account No:</label>
+                <input type="text" id="updateAccountNo" placeholder="Enter account number">
+            </div>
+            <div class="form-group">
+                <label for="updateName">Name:</label>
+                <input type="text" id="updateName" placeholder="Enter new name (optional)">
+            </div>
+            <div class="form-group">
+                <label for="updateContactNo">Contact No:</label>
+                <input type="text" id="updateContactNo" placeholder="Enter new contact number (optional)">
+            </div>
+            <div class="form-group">
+                <label for="updateAddress">Address:</label>
+                <input type="text" id="updateAddress" placeholder="Enter new address (optional)">
+            </div>
+            <div class="form-group">
+                <button onclick="updateData()">Update Data</button>
+            </div>
+            <div id="updateResult" class="result"></div>
+        </div>
+
+        <div id="passbook" class="form-section" style="display: none;">
+            <h1>Passbook</h1>
+            <div class="form-group">
+                <label for="passbookAccountNo">Account No:</label>
+                <input type="text" id="passbookAccountNo" placeholder="Enter account number">
+            </div>
+            <div class="form-group">
+                <button onclick="getPassbook()">Get Passbook</button>
+            </div>
+            <div id="passbookResult" class="result"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const baseUrl = 'http://localhost:8080/BankingSystem/api/user';
+
+    function showSection(sectionId) {
+        const sections = document.querySelectorAll('.form-section');
+        sections.forEach(section => {
+            section.style.display = 'none';
+        });
+        document.getElementById(sectionId).style.display = 'block';
+    }
+
+    function createAccount() {
+        const name = document.getElementById('createName').value;
+        const contactNo = document.getElementById('createContactNo').value;
+        const address = document.getElementById('createAddress').value;
+
+        const accountData = { name, contactNo, address };
+        showLoading(true);
+
+        fetch(`${baseUrl}/create`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(accountData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('createResult').innerHTML = `<h2>Account Created:</h2><pre>${JSON.stringify(data, null, 2)}</pre>`;
+        })
+        .catch(error => {
+            document.getElementById('createResult').innerHTML = `Error: ${error.message}`;
+        })
+        .finally(() => {
+            showLoading(false);
+        });
+    }
+
+    function findAccount() {
+        const accountNo = document.getElementById('findAccountNo').value;
+
+        showLoading(true);
+        fetch(`${baseUrl}/find/${accountNo}`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('findResult').innerHTML = `<h2>Account Details:</h2><pre>${JSON.stringify(data, null, 2)}</pre>`;
+        })
+        .catch(error => {
+            document.getElementById('findResult').innerHTML = `Error: ${error.message}`;
+        })
+        .finally(() => {
+            showLoading(false);
+        });
+    }
+
+    function deposit() {
+        const accountNo = document.getElementById('depositAccountNo').value;
+        const amount = document.getElementById('depositAmount').value;
+
+        const depositData = { amount };
+        showLoading(true);
+
+        fetch(`${baseUrl}/deposit/${accountNo}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(depositData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('depositResult').innerHTML = `<h2>Deposit Successful:</h2><pre>${JSON.stringify(data, null, 2)}</pre>`;
+        })
+        .catch(error => {
+            document.getElementById('depositResult').innerHTML = `Error: ${error.message}`;
+        })
+        .finally(() => {
+            showLoading(false);
+        });
+    }
+
+    function withdraw() {
+        const accountNo = document.getElementById('withdrawAccountNo').value;
+        const amount = document.getElementById('withdrawAmount').value;
+
+        const withdrawData = { amount };
+        showLoading(true);
+
+        fetch(`${baseUrl}/withdraw/${accountNo}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(withdrawData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('withdrawResult').innerHTML = `<h2>Withdrawal Successful:</h2><pre>${JSON.stringify(data, null, 2)}</pre>`;
+        })
+        .catch(error => {
+            document.getElementById('withdrawResult').innerHTML = `Error: ${error.message}`;
+        })
+        .finally(() => {
+            showLoading(false);
+        });
+    }
+
+    function updateData() {
+        const accountNo = document.getElementById('updateAccountNo').value;
+        const name = document.getElementById('updateName').value;
+        const contactNo = document.getElementById('updateContactNo').value;
+        const address = document.getElementById('updateAddress').value;
+
+        const updateData = { name, contactNo, address };
+        showLoading(true);
+
+        fetch(`${baseUrl}/update/${accountNo}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updateData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('updateResult').innerHTML = `<h2>Update Successful:</h2><pre>${JSON.stringify(data, null, 2)}</pre>`;
+        })
+        .catch(error => {
+            document.getElementById('updateResult').innerHTML = `Error: ${error.message}`;
+        })
+        .finally(() => {
+            showLoading(false);
+        });
+    }
+
+    function getPassbook() {
+        const accountNo = document.getElementById('passbookAccountNo').value;
+
+        showLoading(true);
+        fetch(`${baseUrl}/passbook/${accountNo}`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('passbookResult').innerHTML = `<h2>Passbook:</h2><pre>${JSON.stringify(data, null, 2)}</pre>`;
+        })
+        .catch(error => {
+            document.getElementById('passbookResult').innerHTML = `Error: ${error.message}`;
+        })
+        .finally(() => {
+            showLoading(false);
+        });
+    }
+
+    function showLoading(isLoading) {
+        document.getElementById('loading').style.display = isLoading ? 'block' : 'none';
+    }
+
+    // Initialize by showing the Create Account section
+    showSection('createAccount');
+</script>
+</body>
+</html>
